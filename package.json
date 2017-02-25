@@ -1,0 +1,19 @@
+{
+  "name": "ife-2017",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "browser-sync start --server --files '**/*.css,**/*.js , **/*.html'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yiiu/ife-2017.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yiiu/ife-2017/issues"
+  },
+  "homepage": "https://github.com/Yiiu/ife-2017#readme"
+}
