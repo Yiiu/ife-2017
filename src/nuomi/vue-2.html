@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h2>动态数据绑定（一）</h2>
+</body>
+<script>
+function Observer (data) {
+    this.data = data
+    this.watch(this.data)
+}
+
+Observer.prototype = {
+    watch: function (data) {
+        var that = this
+        for (let type in data) {
+            if (data[type] instanceof Object) {
+                this.watch(data[type])
+            }
+            Object.defineProperty(data, type, {
+                get: function (value) {
+                    console.log(type)
+                    console.log('你访问了' + type)
+                    return type
+                },
+                set: function (newValue) {
+                    if (newValue instanceof Object) {
+                        that.watch(newValue)
+                    }
+                    console.log('你设置了' + type + ', 新值为：' + newValue)
+                }
+            })
+        }
+    }
+}
+
+var a = new Observer({
+    name: '小李',
+    age: 2,
+    f: {
+        name: '小明',
+        age: 2
+    }
+})
+</script>
+</html>
