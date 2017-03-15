@@ -24,7 +24,6 @@ Observer.prototype = {
             }
             Object.defineProperty(data, type, {
                 get: function (value) {
-                    console.log(type)
                     console.log('你访问了' + type)
                     return type
                 },
