@@ -12,28 +12,45 @@
 <script>
 function Observer (data) {
     this.data = data
-    this.watch(this.data)
+    this._watch_ = {}
+    this.Ob(this.data)
 }
 
 Observer.prototype = {
-    watch: function (data) {
+    bind (data, type, val) {
         var that = this
-        for (let type in data) {
-            if (data[type] instanceof Object) {
-                this.watch(data[type])
-            }
-            Object.defineProperty(data, type, {
-                get: function (value) {
-                    console.log('你访问了' + type)
-                    return type
-                },
-                set: function (newValue) {
-                    if (newValue instanceof Object) {
-                        that.watch(newValue)
-                    }
-                    console.log('你设置了' + type + ', 新值为：' + newValue)
+        Object.defineProperty(data, type, {
+            configurable: false,
+            enumerable: true,
+            get () {
+                console.log('你访问了' + type)
+                return val
+            },
+            set (newValue) {
+                if (newValue instanceof Object) {
+                    that.Ob(newValue)
                 }
-            })
+                console.log('你设置了' + type + ', 新值为：' + newValue)
+                if (that._watch_[type]) {
+                    that._watch_[type](newValue, val)
+                }
+                val = newValue
+            }
+        })
+    },
+    Ob (data) {
+        Object.keys(data).forEach(type => {
+            if (data[type] instanceof Object) {
+                this.Ob(data[type])
+            }
+            this.bind(data, type, data[type])
+        })
+    },
+    $watch (type, cbk) {
+        if (this.data.hasOwnProperty(type)) {
+            this._watch_[type] = cbk
+        } else {
+            console.log('并没有这个type')
         }
     }
 }
@@ -45,6 +62,10 @@ var a = new Observer({
         name: '小明',
         age: 2
     }
+})
+a.$watch('name', function (newValue, value) {
+    console.log('新的' + newValue)
+    console.log('旧的' + value)
 })
 </script>
 </html>
