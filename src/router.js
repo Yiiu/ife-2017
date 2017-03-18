@@ -41,7 +41,6 @@ export default class Router {
 
     resolve (component) {
         this.body.innerHTML = component.template
-        console.log(component)
         component.Fn ? component.Fn() : () => {}
     }
 

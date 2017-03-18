@@ -1,7 +1,7 @@
 import template from './template.html'
-
+import './style.less'
 function Fn () {
-    console.log(document.querySelector('h2.logo'))
+    
 }
 
 export {
