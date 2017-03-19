@@ -1,3 +1,6 @@
+const aryMethods = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse']
+const arrayAugmentations = []
+
 export default class Observer {
     constructor (data) {
         this.data = data
@@ -38,6 +41,10 @@ export default class Observer {
         } else {
             console.log('并没有这个type')
         }
+    }
+
+    Array () {
+        
     }
 
 }
