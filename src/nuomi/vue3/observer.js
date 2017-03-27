@@ -5,46 +5,84 @@ export default class Observer {
     constructor (data) {
         this.data = data
         this._watch_ = {}
-        this.Ob(this.data)
+        this.walk(this.data)
     }
-    bind (data, type, val) {
+    /**
+     * 数据绑定
+     * 
+     * @param {any} data 
+     * @param {any} type 
+     * @param {any} val 
+     * 
+     * @memberOf Observer
+     */
+    convert (data, type, val, path) {
+        path = path === '' ? type : path += `.${type}`
         Object.defineProperty(data, type, {
             configurable: false,
             enumerable: true,
             get: () => {
-                console.log('你访问了' + type)
                 return val
             },
             set: (newValue) => {
                 if (newValue instanceof Object) {
-                    this.Ob(newValue)
+                    this.walk(newValue)
                 }
-                console.log('你设置了' + type + ', 新值为：' + newValue)
-                if (this._watch_[type]) {
-                    this._watch_[type](newValue, val)
+                if (this._watch_.hasOwnProperty(path)) {
+                    this._watch_[path](newValue)
                 }
                 val = newValue
+                this.bubble(path, newValue)
             }
         })
     }
-    Ob (data) {
+    /**
+     * 循环数据
+     * 
+     * @param {any} data 
+     * 
+     * @memberOf Observer
+     */
+    walk (data, path = '', parent = '') {
         Object.keys(data).forEach(type => {
             if (data[type] instanceof Object) {
-                this.Ob(data[type])
+                this.walk(data[type], type, parent === '' ? type : `${parent}.${type}`)
+                this.convert(data, type, data[type], parent)
+            } else {
+                this.convert(data, type, data[type], parent)
             }
-            this.bind(data, type, data[type])
         })
     }
-    $watch (type, cbk) {
-        if (this.data.hasOwnProperty(type)) {
-            this._watch_[type] = cbk
-        } else {
-            console.log('并没有这个type')
+
+    bubble (path) {
+        let arr = path.split('.')
+        arr = arr.slice(0, arr.length - 1)
+        if (arr.length) {
+            arr.forEach((type, i) => {
+                let num = i + 1
+                if (num > 1) {
+                    let parents = arr.slice(0, num).join('.')
+                    if (this._watch_.hasOwnProperty(parents)) {
+                        let that = this
+                        this._watch_[parents](eval(`that.data.${parents}`))
+                    }
+                } else {
+                    if (this._watch_.hasOwnProperty(type)) {
+                        this._watch_[type](this.data[type])
+                    }
+                }
+            })
         }
     }
-
-    Array () {
-        
+    /**
+     * 回调
+     * 
+     * @param {any} type 
+     * @param {any} cbk 
+     * 
+     * @memberOf Observer
+     */
+    $watch (type, cbk = () =>{}) {
+        this._watch_[type] = cbk
     }
-
 }

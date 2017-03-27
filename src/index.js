@@ -11,8 +11,7 @@ let vue1 = resolve => require(['./nuomi/vue1'], resolve)
 
 let vue2 = resolve => require(['./nuomi/vue2'], resolve)
 
-
-
+let vue3 = resolve => require(['./nuomi/vue3'], resolve)
 
 let router = [
     {
@@ -30,6 +29,10 @@ let router = [
     {
         path: '/vue2',
         component: vue2
+    },
+    {
+        path: '/vue3',
+        component: vue3
     }
 ]
 
