@@ -2,7 +2,7 @@ import template from './template.html'
 
 import Observer from './observer.js'
 
-function Fn () {
+function Fn() {
     console.log(`
 window.data = new Observer({
     name: '小李',
@@ -42,7 +42,7 @@ window.data.$watch('f', function (newValue) {
             }
         }
     })
-    window.data.$watch('f', function (newValue) {
+    window.data.$watch('f', function(newValue) {
         console.log('新的', newValue)
     })
     console.info('修改data')
