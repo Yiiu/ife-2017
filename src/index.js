@@ -3,42 +3,30 @@ import Router from './router'
 
 import '../asset/styles/main.less'
 
-let index = resolve => require(['./components/index'], resolve)
-
-let reg1 = resolve => require(['./nuomi/reg1'], resolve)
-
-let vue1 = resolve => require(['./nuomi/vue1'], resolve)
-
-let vue2 = resolve => require(['./nuomi/vue2'], resolve)
-
-let vue3 = resolve => require(['./nuomi/vue3'], resolve)
-
-let vue4 = resolve => require(['./nuomi/vue4'], resolve)
-
 let router = [
     {
         path: '/',
-        component: index
+        component: resolve => require(['./components/index'], resolve)
     },
     {
         path: '/reg1',
-        component: reg1
+        component: resolve => require(['./nuomi/reg1'], resolve)
     },
     {
         path: '/vue1',
-        component: vue1
+        component: resolve => require(['./nuomi/vue1'], resolve)
     },
     {
         path: '/vue2',
-        component: vue2
+        component: resolve => require(['./nuomi/vue2'], resolve)
     },
     {
         path: '/vue3',
-        component: vue3
+        component: resolve => require(['./nuomi/vue3'], resolve)
     },
     {
         path: '/vue4',
-        component: vue4
+        component: resolve => require(['./nuomi/vue4'], resolve)
     }
 ]
 

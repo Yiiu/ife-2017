@@ -3,9 +3,10 @@ const arrayAugmentations = []
 import Dep from './dep.js'
 
 export default class Observer {
-    constructor(data) {
+    constructor(data, path) {
         this.data = data
-        this._watch_ = {}
+        this.dep = new Dep
+        this.path = path
         this.walk(this.data)
     }
     /**
@@ -17,24 +18,34 @@ export default class Observer {
      * 
      * @memberOf Observer
      */
-    convert(data, type, val, path) {
-        path = path === '' ? type : path += `.${type}`
-
+    convert(data, type, val) {
+        let dep = new Dep
+        let path
+        if (this.path !== '') {
+            path = `${this.path}.${type}`
+        } else {
+            path = type
+        }
+        let childOb = observe(val, path)
         Object.defineProperty(data, type, {
             configurable: false,
             enumerable: true,
             get: () => {
+                if (Dep.target) {
+                    dep.depend()
+                    if (childOb) {
+                        childOb.dep.depend()
+                    }
+                }
                 return val
             },
             set: (newValue) => {
-                if (newValue instanceof Object) {
-                    this.walk(newValue)
-                }
-                if (this._watch_.hasOwnProperty(path)) {
-                    this._watch_[path](newValue)
+                if (newValue === val) {
+                    return
                 }
                 val = newValue
-                this.bubble(path, newValue)
+                dep.notify(newValue)
+                childOb = observe(newValue)
             }
         })
     }
@@ -45,46 +56,41 @@ export default class Observer {
      * 
      * @memberOf Observer
      */
-    walk(data, path = '', parent = '') {
+    walk(data, parent = '') {
         Object.keys(data).forEach(type => {
-            if (data[type] instanceof Object) {
-                this.walk(data[type], type, parent === '' ? type : `${parent}.${type}`)
-                this.convert(data, type, data[type], parent)
-            } else {
-                this.convert(data, type, data[type], parent)
-            }
+            this.convert(data, type, data[type])
         })
     }
 
-    bubble(path) {
+    bubble (path) {
         let arr = path.split('.')
         arr = arr.slice(0, arr.length - 1)
+        let dep = this.dep.filter(val => val.type)
         if (arr.length) {
             arr.forEach((type, i) => {
                 let num = i + 1
                 if (num > 1) {
                     let parents = arr.slice(0, num).join('.')
-                    if (this._watch_.hasOwnProperty(parents)) {
-                        let that = this
-                        this._watch_[parents](eval(`that.data.${parents}`))
-                    }
+                    dep.forEach(val => {
+                        if (val.type === parents) {
+                            val.notify()
+                        }
+                    })
                 } else {
-                    if (this._watch_.hasOwnProperty(type)) {
-                        this._watch_[type](this.data[type])
-                    }
+                    dep.forEach(val => {
+                        if (val.type === type) {
+                            val.notify()
+                        }
+                    })
                 }
             })
         }
     }
-    /**
-     * 回调
-     * 
-     * @param {any} type 
-     * @param {any} cbk 
-     * 
-     * @memberOf Observer
-     */
-    $watch(type, cbk = () => {}) {
-        this._watch_[type] = cbk
+
+}
+export function observe (data, path = '') {
+    if (!data || typeof data !== 'object') {
+         return
     }
+    return new Observer(data, path)
 }
