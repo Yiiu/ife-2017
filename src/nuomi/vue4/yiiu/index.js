@@ -1,5 +1,5 @@
-import Watcher from './watcher.js'
-import Observer, { observe } from './observer.js'
+import Watcher from './watcher'
+import Observer, { observe } from './observer'
 export default class Yiiu {
     constructor (options = {}) {
         this.$options = options

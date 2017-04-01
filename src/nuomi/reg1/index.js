@@ -1,4 +1,4 @@
-import template from './template.html'
+import template from './template'
 
 function Fn () {
     let reg1 = /\b188\d{8}/

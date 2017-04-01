@@ -1,6 +1,6 @@
 const aryMethods = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse']
 const arrayAugmentations = []
-import Dep from './dep.js'
+import Dep from './dep'
 
 export default class Observer {
     constructor(data, path) {

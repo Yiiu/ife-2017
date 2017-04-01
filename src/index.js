@@ -1,7 +1,7 @@
 
 import Router from './router'
 
-import '../asset/styles/main.less'
+import '../asset/styles/main'
 
 let router = [
     {

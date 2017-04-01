@@ -1,6 +1,6 @@
-import template from './template.html'
+import template from './template'
 
-import Observer from './observer.js'
+import Observer from './observer'
 
 function Fn () {
     console.log(`

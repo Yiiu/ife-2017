@@ -1,6 +1,6 @@
-import template from './template.html'
+import template from './template'
 
-import Yiiu from './yiiu/index.js'
+import Yiiu from './yiiu/index'
 
 function Fn() {
     window.data = new Yiiu({

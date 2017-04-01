@@ -26,6 +26,13 @@ module.exports = {
         filename: 'bundle.js',
         path: outputSrc
     },
+    resolve: {
+        extensions: ['.js', '.less', '.html'],
+        alias: {
+            '@': path.resolve('src'),
+            'variable$': path.resolve('asset/styles/var/index.less')
+        }
+    },
     plugins: [
         html,
         asset,

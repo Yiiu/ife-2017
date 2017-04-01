@@ -1,5 +1,5 @@
-import template from './template.html'
-import './style.less'
+import template from './template'
+import './style'
 function Fn () {
     
 }
