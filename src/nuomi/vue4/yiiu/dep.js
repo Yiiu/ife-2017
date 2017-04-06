@@ -14,7 +14,6 @@ export default class Dep {
 	}
 
 	notify (newValue, path) {
-		console.log(this)
 		this.subs.forEach(sub => {
 			sub.update(newValue)
 		})

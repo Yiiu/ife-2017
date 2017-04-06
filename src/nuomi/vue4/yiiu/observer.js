@@ -3,10 +3,10 @@ const arrayAugmentations = []
 import Dep from './dep'
 
 export default class Observer {
-    constructor(data, path) {
+    constructor(data, expression) {
         this.data = data
         this.dep = new Dep
-        this.path = path
+        this.expression = expression
         this.walk(this.data)
     }
     /**
@@ -20,18 +20,18 @@ export default class Observer {
      */
     convert(data, type, val) {
         let dep = new Dep
-        let path
-        if (this.path !== '') {
-            path = `${this.path}.${type}`
+        let expression
+        if (this.expression !== '') {
+            expression = `${this.expression}.${type}`
         } else {
-            path = type
+            expression = type
         }
-        let childOb = observe(val, path)
+        let childOb = observe(val, expression)
         Object.defineProperty(data, type, {
             configurable: false,
             enumerable: true,
             get: () => {
-                if (Dep.target) {
+                if (Dep.target && Dep.target.type === expression) {
                     dep.depend()
                     if (childOb) {
                         childOb.dep.depend()
@@ -45,6 +45,7 @@ export default class Observer {
                 }
                 val = newValue
                 dep.notify(newValue)
+                this.dep.notify(this.data)
                 childOb = observe(newValue)
             }
         })
@@ -62,35 +63,10 @@ export default class Observer {
         })
     }
 
-    bubble (path) {
-        let arr = path.split('.')
-        arr = arr.slice(0, arr.length - 1)
-        let dep = this.dep.filter(val => val.type)
-        if (arr.length) {
-            arr.forEach((type, i) => {
-                let num = i + 1
-                if (num > 1) {
-                    let parents = arr.slice(0, num).join('.')
-                    dep.forEach(val => {
-                        if (val.type === parents) {
-                            val.notify()
-                        }
-                    })
-                } else {
-                    dep.forEach(val => {
-                        if (val.type === type) {
-                            val.notify()
-                        }
-                    })
-                }
-            })
-        }
-    }
-
 }
-export function observe (data, path = '') {
+export function observe (data, expression = '') {
     if (!data || typeof data !== 'object') {
          return
     }
-    return new Observer(data, path)
+    return new Observer(data, expression)
 }

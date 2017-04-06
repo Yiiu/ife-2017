@@ -4,6 +4,7 @@ import Yiiu from './yiiu/index'
 
 function Fn() {
     window.data = new Yiiu({
+        el:'#yiiu-app',
         data: {
             test: {
                 b: 1

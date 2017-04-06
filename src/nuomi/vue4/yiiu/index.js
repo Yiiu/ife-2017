@@ -1,5 +1,7 @@
 import Watcher from './watcher'
+import Diff from './element/diff'
 import Observer, { observe } from './observer'
+import Element from './element/index'
 export default class Yiiu {
     constructor (options = {}) {
         this.$options = options
@@ -7,12 +9,70 @@ export default class Yiiu {
         Object.keys(data).forEach(e => {
             this._proxy(e)
         })
+        this.$el = document.querySelector(options.el)
         this._ob = observe(data)
         this.watchs(options.watch)
+        this.dom()
     }
     $watch (type, cb) {
         new Watcher(this, type, cb)
         return this
+    }
+    dom () {
+        let html = this.$el.innerHTML
+        let child = Element({
+            tagName: 'ul',
+            props: {
+                class: 'list'
+            },
+            children: [
+                Element({
+                    tagName: 'li',
+                    props: {
+                        class: 'item'
+                    },
+                    children:[
+                        'test'
+                    ]
+                }),
+                Element({
+                    tagName: 'li',
+                    props: {
+                        class: 'item{{test}}'
+                    },
+                    children:[
+                        'test'
+                    ]
+                })
+            ]
+        })
+        let newChild = Element({
+            tagName: 'ul',
+            props: {
+                class: 'list'
+            },
+            children: [
+                Element({
+                    tagName: 'li',
+                    props: {
+                        class: 'item'
+                    },
+                    children:[
+                        'as'
+                    ]
+                }),
+                Element({
+                    tagName: 'li',
+                    props: {
+                        class: 'item{{test}}'
+                    },
+                    children:[
+                        'test'
+                    ]
+                })
+            ]
+        })
+        Diff(child, newChild)
     }
     watchs (watchs) {
         Object.keys(watchs).forEach(type => {
